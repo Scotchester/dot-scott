@@ -1,0 +1,116 @@
+# Mostly copied from https://github.com/gf3/dotfiles
+# Note: The character just before \[$RESET\ at line 53 is an emoji -- add your fav:
+# http://osxdaily.com/2013/04/08/add-emoji-command-line-bash-prompt
+
+if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
+  export TERM=gnome-256color
+elif infocmp xterm-256color >/dev/null 2>&1; then
+  export TERM=xterm-256color
+fi
+
+
+# Color Variables
+#################
+
+if tput setaf 1 &> /dev/null; then
+  tput sgr0
+  if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
+    MAGENTA=$(tput setaf 9)
+    ORANGE=$(tput setaf 172)
+    GREEN=$(tput setaf 190)
+    PURPLE=$(tput setaf 141)
+    WHITE=$(tput setaf 0)
+    BLUE=$(tput setaf 117)
+  else
+    MAGENTA=$(tput setaf 5)
+    ORANGE=$(tput setaf 4)
+    GREEN=$(tput setaf 2)
+    PURPLE=$(tput setaf 1)
+    WHITE=$(tput setaf 7)
+  fi
+  BOLD=$(tput bold)
+  RESET=$(tput sgr0)
+else
+  MAGENTA="\033[1;31m"
+  ORANGE="\033[1;33m"
+  GREEN="\033[1;32m"
+  PURPLE="\033[1;35m"
+  WHITE="\033[1;37m"
+  BLUE="\033[1;31m"
+  BOLD=""
+  RESET="\033[m"
+fi
+
+export MAGENTA
+export ORANGE
+export GREEN
+export PURPLE
+export WHITE
+export BLUE
+export BOLD
+export RESET
+
+
+# Command Separator
+###################
+# Creates a dash fill of the current screen width minus the 9 characters (for the time string and a space)
+# Adapted from: http://lifehacker.com/5840450/add-a-handy-separator-between-commands-in-your-terminal-on-mac-os-x-and-linux
+
+function make_fill() {
+  let fillsize=${COLUMNS}-9
+  fill=""
+  
+  while [ "$fillsize" -gt "0" ]
+    do
+      fill="-${fill}" # fill with underscores to work on
+      let fillsize=${fillsize}-1
+    done
+
+  echo $fill
+}
+
+
+# Custom Virtualenv Prompt Mod
+##############################
+# Set up custom virualenv prompt notice so it doesn't go in front of the command separator
+# Adapted from: http://stackoverflow.com/a/20026992/279566
+
+## Disable the default virtualenv prompt change
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+## Create a new virtualenv prompt variable to place where we want it
+function virtualenv_info() {
+    # Get Virtual Env
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        # Strip out the path and just leave the env name
+        venv="${VIRTUAL_ENV##*/}"
+    else
+        # In case you don't have one activated
+        venv=''
+    fi
+    [[ -n "$venv" ]] && echo "($venv) "
+}
+
+
+# parse_get_dirty()
+###################
+# echo '*' if there are uncommitted changes in a Git repo
+
+function parse_git_dirty() {
+  [[ $(git status 2> /dev/null | tail -n1) != *"working directory clean"* ]] && echo "*"
+}
+
+
+# parse_git_branch()
+####################
+# echo the name of the current branch in a Git repo
+
+function parse_git_branch() {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
+}
+
+
+# Set the custom prompt
+#######################
+
+export PS1="\[$BLUE\]\$(make_fill)"' \t\n'"\[$RESET\]\$(virtualenv_info)\[$ORANGE\]\w\[$GREEN\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" \")\[$GREEN\]\$(parse_git_branch)\[$PURPLE\] ⚓ \[$RESET\]"
