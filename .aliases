@@ -4,9 +4,9 @@ alias gh="open \`git remote -v | grep git@github.com | grep fetch | head -1 | cu
 
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
-# alias ...="cd ../.." # disabled tp prevent conflict with dotdotdot
-# alias ....="cd ../../.."
-# alias .....="cd ../../../.."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
 alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 
