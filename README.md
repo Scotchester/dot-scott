@@ -17,3 +17,5 @@ for the technique I adapted.
 
 Custom Virtualenv Prompt technique adapted from ivanalejandro0 on
 [Stack Overflow](http://stackoverflow.com/a/20026992/279566).
+
+I use [...](https://github.com/ingydotnet/...) for easy dot file management.
