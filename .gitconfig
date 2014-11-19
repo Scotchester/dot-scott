@@ -17,7 +17,7 @@
     postBuffer = 524288000
 
 [include]
-    # path = .gitconfig_cfpb
+    path = .gitconfig_local
 
 [init]
     templatedir = ~/.git-templates
