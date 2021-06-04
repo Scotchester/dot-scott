@@ -2,9 +2,6 @@
 
 My collection of Unix dot files. Start with [`.bash_profile`](.bash_profile).
 
-`.bashrc` attempts to source a `.local_settings` file, which is not committed to
-this repo, for things that are unique to each machine on which I'm working.
-
 
 ## Credits
 
@@ -17,5 +14,3 @@ for the technique I adapted.
 
 Custom Virtualenv Prompt technique adapted from ivanalejandro0 on
 [Stack Overflow](http://stackoverflow.com/a/20026992/279566).
-
-I use [...](https://github.com/ingydotnet/...) for easy dot file management.

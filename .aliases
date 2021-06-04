@@ -1,141 +1,136 @@
-# Opens current repo in GitHub in browser (origin remote)
-alias gh="open \`git remote -v | grep git@github.com | grep fetch | head -1 | cut -f2 | cut -d' ' -f1 | sed -e's/:/\//' -e 's/git@/http:\/\//'\`"
+# Easier navigation
+# =================
 
+alias ..="cd ../"
+alias ...="cd ../../"
+alias ....="cd ../../../"
+alias .....="cd ../../../../"
+alias ~="cd ~"  # `cd` is probably faster to type though
+alias -- -="cd -"  # go to previous directory (not necessarily up a level)
 
-# Easier navigation: .., ..., ...., ....., ~ and -
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ~="cd ~" # `cd` is probably faster to type though
-alias -- -="cd -"
 
 # Shortcuts
+# =========
+
+alias a="atom"
+alias aa="atom ."
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 alias g="git"
 alias gr="grunt"
+alias gu="yarn gulp"
+alias gulp="yarn gulp"
 alias h="history"
 alias j="jobs"
-alias v="vim"
-alias s="subl ."
 alias o="open"
 alias oo="open ."
+alias s="subl"
+alias ss="subl ."
+alias v="vim"
 
-# Detect which `ls` flavor is in use
-if ls --color > /dev/null 2>&1; then # GNU `ls`
-    colorflag="--color"
-else # OS X `ls`
-    colorflag="-G"
-fi
 
-# List all files colorized in long format
-alias l="ls -l ${colorflag}"
-alias ll="ls -l ${colorflag}"
+# Old ls aliases, now pointing to exa
+# https://the.exa.website/
+# ===================================
 
-# List all files colorized in long format, including dot files
-alias la="ls -la ${colorflag}"
+## Always use exa
+alias ls="exa"
 
-# List only directories
-alias lsd='ls -l ${colorflag} | grep "^d"'
+## List all files colorized in long format, with headers
+alias l="exa -lh --git --group-directories-first"
+alias ll="exa -lh --git --group-directories-first"
 
-# Always use color output for `ls`
-alias ls="command ls ${colorflag}"
-export LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
+## List all files colorized in long format, with headers, including dot files
+alias la="exa -lah --git --group-directories-first"
+
+## List only directories
+alias lsd="exa -lahD"
+
+## List in tree view
+alias lst="exa -lahT"
+
 
 # Kill things
+# ===========
+
 alias murder='rm -rf'
 
-# Enable aliases to be sudo’ed
-alias sudo='sudo '
+## Recursively delete `.DS_Store` files
+alias rmds="find . -type f -name '*.DS_Store' -ls -delete"
 
-# Gzip-enabled `curl`
+## Blow away `.pyc` files in the current directory and below
+alias rmpyc="find . -name \"*.pyc\" -exec rm -rf {} \;"
+
+
+# Combo Git commands
+# ==================
+
+alias gfoswg="g fo && g sw gh-pages"
+alias gfoswm="g fo && g sw main"
+alias gforog="g fo && g rog"
+alias gforom="g fo && g rom"
+alias gfost="g fo && g st"
+alias gfuswm="g fu && g co main"
+alias gswmp="g sw main && g pull"
+alias gpotty="g po && g pot && g put"
+
+
+# Docker commands
+# ==================
+
+alias dc="docker-compose"
+alias dcb="docker-compose build"
+alias dce="docker-compose exec"
+alias dcu="docker-compose up"
+alias dcepb="docker-compose exec python bash"
+alias dap="docker attach cfgov-refresh_python_1"
+
+
+# Networky stuff
+# ==============
+
+## Gzip-enabled `curl`
 alias gurl='curl --compressed'
 
-# Get week number
-alias week='date +%V'
-
-# IP addresses
+## IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias localip="ipconfig getifaddr en1"
-alias ips="ifconfig -a | grep -o 'inet6\? \(\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\)\|[a-fA-F0-9:]\+\)' | sed -e 's/inet6* //'"
+alias localip="ipconfig getifaddr en0"
 
-# Enhanced WHOIS lookups
-alias whois="whois -h whois-servers.net"
 
-# Flush Directory Service cache
-alias flush="dscacheutil -flushcache && killall -HUP mDNSResponder"
+# Misc. applications, programs, scripts, and utilities
+# ====================================================
 
-# Clean up LaunchServices to remove duplicates in the “Open With” menu
-alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+## Setup Atom command, since it can't add its own symlinks
+alias atom='sh ~/Applications/Atom.app/Contents/Resources/app/atom.sh'
 
-# View HTTP traffic
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+## Activate Sauce Connect
+alias saucy="/Users/cranfills/Applications/sc-4.6.2-osx/bin/sc"
 
-# Start python HTTP server
+## Start python HTTP server
 alias server="python -m SimpleHTTPServer"
 
-# Canonical hex dump; some systems have this symlinked
-command -v hd > /dev/null || alias hd="hexdump -C"
+alias ucp='source /Users/cranfills/Downloads/ucp-bundle-scott/env.sh'
 
-# OS X has no `md5sum`, so use `md5` as a fallback
-command -v md5sum > /dev/null || alias md5sum="md5"
+## URL-encode strings (wrap them in single quotes)
+alias urlencode='python -c "import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]));"'
 
-# OS X has no `sha1sum`, so use `shasum` as a fallback
-command -v sha1sum > /dev/null || alias sha1sum="shasum"
 
-# Trim new lines and copy to clipboard
-alias c="tr -d '\n' | pbcopy"
+# Other
+# =====
 
-# Recursively delete `.DS_Store` files
-alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
+## Ring the terminal bell and put a badge on Terminal.app’s Dock icon
+## For example, when executing time-consuming commands:
+## ./refresh-data.sh && bell
+alias bell="tput bel"
 
-# ROT13-encode text. Works for decoding, too! ;)
-alias rot13='tr a-zA-Z n-za-mN-ZA-M'
-
-# Empty the Trash on all mounted volumes and the main HDD
-# Also, clear Apple’s System Logs to improve shell startup speed
-alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
-
-# Show/hide hidden files in Finder
-alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
-alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
-
-# Hide/show all desktop icons (useful when presenting)
-alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
-alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
-
-# URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
-
-# Merge PDF files
-# Usage: `mergepdf -o output.pdf input{1,2,3}.pdf`
-alias mergepdf='/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py'
-
-# Disable Spotlight
-alias spotoff="sudo mdutil -a -i off"
-# Enable Spotlight
-alias spoton="sudo mdutil -a -i on"
-
-# PlistBuddy alias, because sometimes `defaults` just doesn’t cut it
-alias plistbuddy="/usr/libexec/PlistBuddy"
-
-# Ring the terminal bell, and put a badge on Terminal.app’s Dock icon
-# (useful when executing time-consuming commands)
-alias badge="tput bel"
-
-# Intuitive map function
-# For example, to list all directories that contain a certain file:
-# find . -name .gitattributes | map dirname
+## Intuitive map function
+## For example, to list all directories that contain a certain file:
+## find . -name README.md | map dirname
 alias map="xargs -n1"
 
-# One of @janmoesen’s ProTip™s
-for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-    alias "$method"="lwp-request -m '$method'"
-done
 
-# Stuff I never really use but cannot delete either because of http://xkcd.com/530/
+# Stuff I never use but cannot delete either because of http://xkcd.com/530/
+# ==========================================================================
 alias stfu="osascript -e 'set volume output muted true'"
 alias pumpitup="osascript -e 'set volume 7'"
 alias hax="growlnotify -a 'Activity Monitor' 'System error' -m 'WTF R U DOIN'"
